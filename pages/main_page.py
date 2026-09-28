@@ -36,9 +36,9 @@ class MainPage(BasePage):
             "//p[contains(@class, 'counter_counter__num')]",
         )
 
-    @allure.step("Открыть страницу конструктора")
+    @allure.step("Открыть страницу конструктора по адресу {url}")
     def open(self, url: str):
-        self.driver.get(url)
+        self.open_page(url)
 
     @allure.step("Кликнуть по ингредиенту «{ingredient_name}»")
     def click_ingredient(self, ingredient_name: str):
@@ -95,3 +95,8 @@ class MainPage(BasePage):
         # Явное ожидание вместо предположения "раз залогинились — значит всё ок":
         # кнопка "Оформить заказ" видна только авторизованному пользователю.
         self.find_element(self.CREATE_ORDER_BUTTON)
+
+    @allure.step("Проверить, что конструктор открыт")
+    def is_constructor_opened(self) -> bool:
+        """Проверяет, что страница конструктора открыта (видна корзина)."""
+        return self.is_element_visible(self.CONSTRUCTOR_BASKET)
