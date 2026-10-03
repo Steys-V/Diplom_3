@@ -88,3 +88,13 @@ class BasePage:
         source.dispatchEvent(new DragEvent('dragend', { bubbles: true, cancelable: true, dataTransfer }));
         """
         self.driver.execute_script(js_script, source, target)
+
+    @allure.step("Найти элемент без ожидания {locator}")
+    def find_element_direct(self, locator):
+        """Поиск элемента без явного ожидания — для случаев, когда элемент может отсутствовать."""
+        return self.driver.find_element(*locator)
+
+    @allure.step("Найти все элементы без ожидания {locator}")
+    def find_elements_direct(self, locator):
+        """Поиск всех элементов без явного ожидания — для случаев, когда элементы могут отсутствовать."""
+        return self.driver.find_elements(*locator)
