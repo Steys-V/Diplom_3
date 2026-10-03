@@ -60,7 +60,6 @@ class MainPage(BasePage):
     def wait_for_ingredient_counter_increase(self, ingredient_name: str, initial_value: int, timeout: int = 5) -> bool:
         locator = self.ingredient_counter_locator(ingredient_name)
         def _counter_increased(driver):
-            # ✅ ТОЛЬКО self.find_elements, никакого driver
             elements = self.find_elements(locator)
             if not elements:
                 return False
@@ -79,7 +78,6 @@ class MainPage(BasePage):
     @allure.step("Получить номер заказа из модального окна")
     def get_order_number_from_modal(self, timeout: int = 10) -> str:
         def _has_real_number(driver):
-            # ✅ ТОЛЬКО self.find_element, никакого driver
             text = self.find_element(self.ORDER_NUMBER_IN_MODAL).text.strip()
             return text not in ("", "9999", "0000")
         self.wait_until(_has_real_number, timeout=timeout)
