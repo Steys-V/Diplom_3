@@ -10,6 +10,8 @@ from pages.register_page import RegisterPage
 from pages.feed_page import OrderFeedPage
 from utils.urls import Urls
 from helpers.api import register_user, login_user, delete_user
+from helpers.user_data import generate_user_data
+from pages.header_component import HeaderComponent
 
 
 @pytest.fixture(params=["chrome", "firefox"])
@@ -42,29 +44,28 @@ class Pages:
     login: LoginPage
     register: RegisterPage
     feed: OrderFeedPage
-
+    header: HeaderComponent
 
 @pytest.fixture
 def pages(driver) -> Pages:
+    from pages.header_component import HeaderComponent
+
     main_page = MainPage(driver)
     main_page.open(Urls.BASE_URL)
+
     return Pages(
         main=main_page,
         login=LoginPage(driver),
         register=RegisterPage(driver),
         feed=OrderFeedPage(driver),
+        header=HeaderComponent(driver),
     )
 
 
 @pytest.fixture(scope="function")
 def api_user():
     """Создаёт пользователя через API перед тестом и удаляет после."""
-    unique_id = str(uuid.uuid4())[:8]
-    user_data = {
-        "email": f"test_{unique_id}@mail.ru",
-        "password": "password123",
-        "name": f"Test User {unique_id}",
-    }
+    user_data = generate_user_data()
 
     response = register_user(
         user_data["email"],
@@ -81,5 +82,5 @@ def api_user():
         access_token = login_resp.json().get("accessToken")
         delete_resp = delete_user(access_token)
         delete_resp.raise_for_status()
-    except Exception as e:
-        print(f"Warning: Failed to delete user {user_data['email']}: {e}")
+    except Exception:
+        pass

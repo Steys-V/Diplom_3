@@ -11,12 +11,12 @@ class TestMainFunctionality:
 
     @allure.title("Переход по клику на «Конструктор»")
     def test_click_constructor(self, pages):
-        pages.main.header.click_constructor()
+        pages.header.click_constructor()
         assert pages.main.is_constructor_opened()
 
     @allure.title("Переход по клику на «Лента заказов»")
     def test_click_order_feed(self, pages):
-        pages.main.header.click_order_feed()
+        pages.header.click_order_feed()
         assert pages.feed.is_feed_opened()
 
     @allure.title("При клике на ингредиент появляется всплывающее окно")

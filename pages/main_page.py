@@ -2,7 +2,7 @@
 import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
-from pages.header_component import HeaderComponent
+
 
 class MainPage(BasePage):
     CONSTRUCTOR_BASKET = (By.XPATH, "//ul[contains(@class, 'BurgerConstructor_basket')]")
@@ -13,18 +13,17 @@ class MainPage(BasePage):
 
     def __init__(self, driver):
         super().__init__(driver)
-        self.header = HeaderComponent(driver)
 
-    @staticmethod
-    def ingredient_link_locator(ingredient_name: str):
+    @allure.step("Получить локатор ингредиента «{ingredient_name}»")
+    def ingredient_link_locator(self, ingredient_name: str):
         return (
             By.XPATH,
             "//a[contains(@class, 'BurgerIngredient_ingredient') and "
             f".//p[contains(text(), '{ingredient_name}')]]",
         )
 
-    @staticmethod
-    def ingredient_counter_locator(ingredient_name: str):
+    @allure.step("Получить локатор счётчика ингредиента «{ingredient_name}»")
+    def ingredient_counter_locator(self, ingredient_name: str):
         return (
             By.XPATH,
             "//a[contains(@class, 'BurgerIngredient_ingredient') and "

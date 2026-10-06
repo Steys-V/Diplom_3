@@ -26,6 +26,7 @@ class OrderFeedPage(BasePage):
 
     @allure.step("Получить значение счётчика «Выполнено за сегодня»")
     def get_today_orders_count(self) -> int:
+        self.is_element_visible(self.TODAY_ORDERS_COUNTER, timeout=10)
         return int(self.get_text(self.TODAY_ORDERS_COUNTER))
 
     @allure.step("Дождаться увеличения счётчика заказов ({counter_name})")
@@ -39,6 +40,7 @@ class OrderFeedPage(BasePage):
             self.refresh_and_wait(locator)
         return current_value > initial_value
 
+    @allure.step("Получить локатор номера заказа {order_number} в разделе «В работе»")
     def _in_progress_number_locator(self, order_number: str):
         clean_number = order_number.replace("#", "").strip()
         padded_number = clean_number.zfill(6)
@@ -54,19 +56,14 @@ class OrderFeedPage(BasePage):
         """Проверяет появление номера заказа в разделе 'В работе'."""
         locator = self._in_progress_number_locator(order_number)
 
-        time.sleep(2)
-
-        for attempt in range(5):
+        end_time = time.time() + timeout
+        while time.time() < end_time:
             try:
                 if self.is_element_visible(locator, timeout=5):
                     return True
             except Exception:
-                pass  # Игнорируем временные ошибки, переходим к обновлению
-
-            if attempt < 4:
-                self.driver.refresh()
-                self.is_element_visible((By.XPATH, "//h1[contains(text(), 'Лента заказов')]"), timeout=5)
-                time.sleep(1)
+                pass
+            self.refresh_and_wait((By.XPATH, "//h1[contains(text(), 'Лента заказов')]"))
 
         return False
 
